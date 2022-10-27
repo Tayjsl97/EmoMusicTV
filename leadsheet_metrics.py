@@ -95,7 +95,7 @@ def compute_metrics(chord_sequence,melody_sequence):
                 m_i += 1
         if m_i == len(melodyPit_m):
             DC += 1
-    DC = DC / (len(chord_sequence) / 2)
+    DC = DC / len(chord_sequence)
     ############################# CTnCTR ############################
     c = 0
     p = 0
