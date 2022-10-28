@@ -1,3 +1,8 @@
+"""
+Created on Fri Oct 29 16:28:18 2022
+@author: Shulei Ji
+"""
+
 from chord_metrics import chordRepre2interval,tonal_centroid,halfBar_sequences
 import numpy as np
 

@@ -1,3 +1,8 @@
+"""
+Created on Fri Oct 29 16:28:18 2022
+@author: Shulei Ji
+"""
+
 import torch
 import torch.nn as nn
 import os
@@ -146,7 +151,7 @@ def genefunc(melody,chord,i):
     music_track.append(chord_track)
     music = muspy.Music(metadata=metadata, resolution=24, tempos=tempos,
                         key_signatures=key_signatures, time_signatures=time_signatures, tracks=music_track)
-    music_disPath = os.path.join(disPath, "GT_chordVAE_" + dataset + "_" + date + "_" + str(i) + '.mid')
+    music_disPath = os.path.join(disPath, "chordVAE_" + dataset + "_" + date + "_" + str(i) + '.mid')
     muspy.write_midi(music_disPath, music)
 
 TIMESIGN={0:[6, 8], 1:[4, 4], 2:[9, 8], 3:[2, 4], 4:[3, 4], 5:[2, 2], 6:[6, 4], 7:[3, 2]}
@@ -222,7 +227,7 @@ if __name__ == '__main__':
     generate_num = 1000
     disPath='./generated_music/chord/'
     # load models
-    resume="./save_models/chordVAE_NMD_epoch96_min_0.0832.pth"
+    resume="./save_models/your_chordVAE.pth"
     model=chordVAE(N=3,h=4,m_size=8,c_size=48,d_ff=256,hidden_size=256,latent_size=128,dropout=0.2).to(device)
     dict=torch.load(resume,map_location=device)
     model.load_state_dict(dict['model'])

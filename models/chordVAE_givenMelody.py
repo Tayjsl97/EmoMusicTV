@@ -1,3 +1,8 @@
+"""
+Created on Fri Oct 29 16:28:18 2022
+@author: Shulei Ji
+"""
+
 import torch
 from models.MusicTV import MusicTV,LayerNorm,full_mask,triple_mask
 

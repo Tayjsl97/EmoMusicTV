@@ -1,3 +1,8 @@
+"""
+Created on Fri Oct 29 16:28:18 2022
+@author: Shulei Ji
+"""
+
 import torch
 import os
 import pickle
@@ -146,7 +151,7 @@ def generate_GT(melody,chord,i):
     music_track.append(chord_track)
     music = muspy.Music(metadata=metadata, resolution=24, tempos=tempos,
                         key_signatures=key_signatures, time_signatures=time_signatures, tracks=music_track)
-    music_disPath = os.path.join(disPath, "GT_inpainting_124_" + str(i) + '.mid')
+    music_disPath = os.path.join(disPath, "inpainting_" + str(i) + '.mid')
     muspy.write_midi(music_disPath, music)
 
 import copy
@@ -300,7 +305,7 @@ if __name__ == '__main__':
     generate_num = 1000
     disPath='./generated_music/'
     # load models
-    resume="./save_models/MusicTV_124/MusicTV_124_epoch109_min_2.9357.pth"
+    resume="./save_models/your_pretrained_models.pth"
     model = MusicTV(N=3,h=4,m_size=8,c_size=48,d_ff=256,hidden_size=256,latent_size=128,dropout=0.2).to(device)
     dict=torch.load(resume,map_location=device)
     model.load_state_dict(dict['model'])
