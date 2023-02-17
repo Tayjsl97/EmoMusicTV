@@ -121,6 +121,16 @@ def genefunc(melody,chord,i):
     music_disPath = os.path.join(disPath, "melodyVAE_" + dataset + "_" + date + "_" + str(i) + '.mid')
     muspy.write_midi(music_disPath, music)
 
+def delete_rest(melody):
+    new_melody=[]
+    for i in range(len(melody)):
+        if melody[i]==1:
+            if i>0 and i<len(melody)-1:
+                if melody[i+1]!=1 and melody[i-1]!=1:
+                    new_melody.append(1)
+        else:
+            new_melody.append(melody[i])
+    return new_melody
 
 TIMESIGN={0:[6, 8], 1:[4, 4], 2:[9, 8], 3:[2, 4], 4:[3, 4], 5:[2, 2], 6:[6, 4], 7:[3, 2]}
 DURATION={0:2, 1:4, 2:6, 3:8, 4:10, 5:12, 6:16, 7:18, 8:20, 9:22, 10:24, 11:30, 12:32, 13:36, 14:42, 15:44, 16:48, 17:54, 18:56, 19:60,
@@ -152,6 +162,7 @@ def generate(model,melodyList,chordList,valenceList,disPath,generate_num):
             wrong_cnt+=1
             continue
         melody.insert(0,melodyList[i][0]);melody.insert(1,0);melody.pop()
+        melody=delete_rest(melody)
         print(len(melody),melody)
         ######################## compute metrics ######################################
         if metrics is True:

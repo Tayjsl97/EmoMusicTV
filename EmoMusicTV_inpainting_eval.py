@@ -7,7 +7,7 @@ import torch
 import os
 import pickle
 import muspy
-from models.MusicTV import MusicTV
+from models.EmoMusicTV import EmoMusicTV
 from leadsheet_metrics import compute_metrics
 from chord_metrics import getBar
 from utils import calc_chords_val,calc_piece_val
@@ -306,7 +306,7 @@ if __name__ == '__main__':
     disPath='./generated_music/'
     # load models
     resume="./save_models/your_pretrained_models.pth"
-    model = MusicTV(N=3,h=4,m_size=8,c_size=48,d_ff=256,hidden_size=256,latent_size=128,dropout=0.2).to(device)
+    model = EmoMusicTV(N=3,h=4,m_size=8,c_size=48,d_ff=256,hidden_size=256,latent_size=128,dropout=0.2).to(device)
     dict=torch.load(resume,map_location=device)
     model.load_state_dict(dict['model'])
     model.eval()

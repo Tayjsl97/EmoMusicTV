@@ -4,12 +4,12 @@ Created on Fri Oct 29 17:28:18 2022
 """
 
 import torch
-from models.MusicTV import MusicTV,LayerNorm,full_mask,triple_mask
+from models.EmoMusicTV import EmoMusicTV,LayerNorm,full_mask,triple_mask
 
 device=torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
-class chordVAE(MusicTV):
+class chordVAE(EmoMusicTV):
     def __init__(self,N,h,m_size,c_size,d_ff,hidden_size,latent_size,dropout):
         super().__init__(N,h,m_size,c_size,d_ff,hidden_size,latent_size,dropout)
 

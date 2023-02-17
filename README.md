@@ -1,2 +1,2 @@
-# MusicTV
-This is the official implementation of MusicTV. 
+# EmoMusicTV
+This is the official implementation of EmoMusicTV. 

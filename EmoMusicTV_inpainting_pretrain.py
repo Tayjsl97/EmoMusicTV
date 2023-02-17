@@ -13,7 +13,7 @@ import math
 import datetime
 import numpy as np
 from pytorchtools import EarlyStopping
-from models.MusicTV import MusicTV
+from models.EmoMusicTV import EmoMusicTV
 
 device=torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(torch.cuda.is_available())
@@ -63,10 +63,10 @@ def timeSince(since):
 
 
 def trainIter(train_melody,train_chord,train_valence,test_melody,test_chord,test_valence,Epoch):
-    model_path = "./save_models/MusicTV_124/"
+    model_path = "./save_models/EmoMusicTV_124/"
     if not os.path.exists(model_path):
         os.makedirs(model_path)
-    f = open('./logs/MusicTV_124.log', 'a')
+    f = open('./logs/EmoMusicTV_124.log', 'a')
     f.write('\nbatch_size: %.6d lr: %.6f' % (batch_size,learning_rate))
     f.close()
     train_length = len(train_melody)
@@ -78,7 +78,7 @@ def trainIter(train_melody,train_chord,train_valence,test_melody,test_chord,test
     # epoch_already=dict['epoch']
     # step = (train_length // 12) * epoch_already
     for epoch in range(0,Epoch):
-        f = open('./logs/MusicTV_124.log', 'a')
+        f = open('./logs/EmoMusicTV_124.log', 'a')
         print("-----------------------------epoch ", epoch, "------------------------------")
         f.write('\n-----------------------------epoch %d------------------------------' % (epoch))
         train_start_idx=0
@@ -175,13 +175,13 @@ def trainIter(train_melody,train_chord,train_valence,test_melody,test_chord,test
         if test_average < max_test_loss:
             print("epoch: %d save min test loss model-->test loss: %.6f" % (epoch, test_average))
             f.write('\nepoch: %d save min test loss model-->test loss: %.6f' % (epoch, test_average))
-            model_save_path = model_path + "MusicTV_124_epoch" + str(epoch) + "_min_" + str(round(test_average,4)) + ".pth"
+            model_save_path = model_path + "EmoMusicTV_124_epoch" + str(epoch) + "_min_" + str(round(test_average,4)) + ".pth"
             state = {'model': VAE.state_dict(), 'optimizer': optimizer.state_dict(), 'epoch': epoch}
             torch.save(state, model_save_path)
             max_test_loss = test_average
         else:
             if epoch%5==0:
-                model_save_path = model_path + "MusicTV_124_epoch" + str(epoch) + "_" + str(round(test_average,4)) + ".pth"
+                model_save_path = model_path + "EmoMusicTV_124_epoch" + str(epoch) + "_" + str(round(test_average,4)) + ".pth"
                 state = {'model': VAE.state_dict(), 'optimizer': optimizer.state_dict(), 'epoch': epoch}
                 torch.save(state, model_save_path)
         f.close()
@@ -194,8 +194,8 @@ if __name__ == '__main__':
     batch_size = 72
     patience = 20
     Epoch = 200
-    VAE = MusicTV(N=3,h=4,m_size=8,c_size=48,d_ff=256,hidden_size=256,latent_size=128,dropout=0.2).to(device)
-    #resume="./save_models/MusicTV_124/MusicTV_124_epoch109_min_2.9357.pth"
+    VAE = EmoMusicTV(N=3,h=4,m_size=8,c_size=48,d_ff=256,hidden_size=256,latent_size=128,dropout=0.2).to(device)
+    #resume="./save_models/EmoMusicTV_124/EmoMusicTV_124_epoch109_min_2.9357.pth"
     # dict=torch.load(resume)
     # VAE.load_state_dict(dict['model'])
     criterion = nn.NLLLoss().to(device)

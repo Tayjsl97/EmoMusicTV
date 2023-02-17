@@ -179,9 +179,9 @@ def triple_mask(batch,l_decoder_seq):
     return (torch.from_numpy(decoder_mask) == 0).to(device)
 
 
-class MusicTV(nn.Module):
+class EmoMusicTV(nn.Module):
     def __init__(self,N,h,m_size,c_size,d_ff,hidden_size,latent_size,dropout):
-        super(MusicTV,self).__init__()
+        super(EmoMusicTV,self).__init__()
         c=copy.deepcopy
         self.N=N
         self.m_size = m_size

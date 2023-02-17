@@ -4,12 +4,12 @@ Created on Fri Oct 29 17:28:18 2022
 """
 
 import torch
-from models.MusicTV import MusicTV,full_mask,triple_mask,LayerNorm
+from models.EmoMusicTV import EmoMusicTV,full_mask,triple_mask,LayerNorm
 
 device=torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
-class melodyVAE(MusicTV):
+class melodyVAE(EmoMusicTV):
     def __init__(self,N,h,m_size,c_size,d_ff,hidden_size,latent_size,dropout):
         super().__init__(N,h,m_size,c_size,d_ff,hidden_size,latent_size,dropout)
 
@@ -116,6 +116,11 @@ class melodyVAE(MusicTV):
                 if topi[:,i,k].squeeze(0).item()<=61:
                     return topi[:,i,k].unsqueeze(-1)
             print("wrong1")
+        elif flag == 2:
+            if topi[:, i, 0].squeeze(0).item() == 0:
+                return topi[:, i, 0].unsqueeze(-1)
+            else:
+                return torch.LongTensor([[1]]).to(device)
         else:
             for k in range(topi.shape[2]):
                 if topi[:,i,k].squeeze(0).item()>61:
@@ -167,6 +172,8 @@ class melodyVAE(MusicTV):
                     note=topi.squeeze(0).item()
                     if note==0:
                         flag=1
+                    elif note == 1 and i > 5:
+                        flag = 2
                     else:
                         flag=flag*-1
                     generate_notes.append(note)

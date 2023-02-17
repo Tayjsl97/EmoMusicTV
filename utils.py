@@ -61,6 +61,23 @@ def calc_piece_val(valenceSeq):
         cat = -2
     return cat
 
+def bar_padding(melody):
+    for i in range(len(melody)):
+        last = melody[i].index(0)
+        new_data_i = melody[i][:last]
+        for j in range(last + 1, len(melody[i])):
+            if melody[i][j] == 0:
+                new_data_i.extend(melody[i][last:j])
+                for k in range(42 - (j - last - 1)):
+                    new_data_i.append(1)
+                last = j
+        new_data_i.extend(melody[i][last:])
+        for k in range(42 - (len(melody[i]) - last - 1)):
+            new_data_i.append(1)
+        melody[i]=new_data_i
+    return melody
+
+
 def list2tensor(melody,chord,valence,device):
     new_melody=[]
     new_chord=[]
@@ -74,3 +91,4 @@ def list2tensor(melody,chord,valence,device):
             new_chord.append(chord_temp)
             new_valence.append(valence_temp)
     return new_melody,new_chord,new_valence
+

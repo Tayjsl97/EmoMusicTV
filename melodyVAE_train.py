@@ -14,7 +14,7 @@ import datetime
 import numpy as np
 from pytorchtools import EarlyStopping
 from models.melodyVAE_givenHarmony import melodyVAE
-from utils import list2tensor
+from utils import list2tensor,bar_padding
 
 
 device=torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -195,6 +195,7 @@ if __name__ == '__main__':
     file = open("./data/" + dataset + "_chord_test_valence.data", 'rb')
     test_valence = pickle.load(file)
     print(len(test_melody), len(test_chord), len(test_valence))
+    train_melody=bar_padding(train_melody)  # padding each bar to the equal length
     train_melody,train_chord,train_valence=list2tensor(train_melody,train_chord,train_valence,device)
     print(len(train_melody), len(train_chord), len(train_valence))
     test_melody, test_chord, test_valence = list2tensor(test_melody, test_chord, test_valence,device)
