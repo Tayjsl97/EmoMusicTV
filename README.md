@@ -1,7 +1,7 @@
 # EmoMusicTV
 This is the official implementation of EmoMusicTV, which  is a transformer-based variational autoencoder (VAE) that contains a hierarchical latent variable structure to explore the impact of time-varying emotional conditions on multiple music generation tasks and to capture the rich variability of musical sequences. <br>
 - [Paper link](https://ieeexplore.ieee.org/abstract/document/10124351)
-- Check our [demo page](https://tayjsl97.github.io/demos/tmm) and give it a listen!
+- Check our [demo page](https://tayjsl97.github.io/demos/tmm) and give it a listen!<br>
 <img src="img/model.jpg" width="300" height="350" alt="model"/><img src="img/instantiation.jpg" width="300" height="250" alt="model"/>
 
 # Reference
