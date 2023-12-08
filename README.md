@@ -3,7 +3,6 @@ This is the official implementation of EmoMusicTV, which  is a transformer-based
 - [Paper link](https://ieeexplore.ieee.org/abstract/document/10124351)
 - Check our [demo page](https://tayjsl97.github.io/demos/tmm) and listen!<br>
 <br>
-
 <img src="img/model.jpg" width="300" height="350" alt="model"/><img src="img/instantiation.jpg" width="300" height="250" alt="model"/>
 
 # Reference
