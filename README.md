@@ -7,17 +7,17 @@ This is the official implementation of EmoMusicTV, which  is a transformer-based
 <img src="img/model.jpg" width="300" height="350" alt="model"/><img src="img/instantiation.jpg" width="300" height="250" alt="model"/>
 
 # Data Interpretation
-👇Interpretation of indices in melody.data 
+👇Interpretation of index in melody.data 
 Index | Definition
 -------|----------
-0 | bar
+0 | bar mark
 1-61 | pitch (1 for rest, 2-61 for pitch 42-101)
 62-98 | duration (mapping dict in chordVAE_eval.py)
 99-106 | time signature (mapping dict in chordVAE_eval.py)
 
 Consequently, each melody event is represented by a 107-D one-hot vector.
 
-👇Interpretation of indices in chord.data 
+👇Interpretation of index in chord.data 
 Index | Definition
 -------|----------
 0-6 | chord mode (0 for rest, mapping dict in chordVAE_eval.py)
@@ -25,7 +25,7 @@ Index | Definition
 
 Consequently, each chord event is represented by a 48-D vector (concatenation of 7-D and 41-D).
 
-👇Interpretation of indices in valence.data 
+👇Interpretation of index in valence.data 
 Index | Definition
 -------|----------
 -2 | very negative
