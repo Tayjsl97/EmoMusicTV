@@ -11,19 +11,30 @@ This is the official implementation of EmoMusicTV, which  is a transformer-based
 Index | Definition
 -------|----------
 0 | bar
-1-61 | pitch (1 for rest)
-62-98 | duration
-99-106 | time signature
+1-61 | pitch (1 for rest, 2-61 for pitch 42-101)
+62-98 | duration (mapping dict in chordVAE_eval.py)
+99-106 | time signature (mapping dict in chordVAE_eval.py)
 
-Consequently, each melody event is represented by a 107-D vector.
+Consequently, each melody event is represented by a 107-D one-hot vector.
 
 👇Interpretation of indices in chord.data 
 Index | Definition
 -------|----------
-0-6 | chord mode (0 for rest)
-0-40 | root tone 
+0-6 | chord mode (0 for rest, mapping dict in chordVAE_eval.py)
+0-40 | root tone (40 for rest, 0-39 for pitch 30-69)
 
 Consequently, each chord event is represented by a 48-D vector (concatenation of 7-D and 41-D).
+
+👇Interpretation of indices in valence.data 
+Index | Definition
+-------|----------
+-2 | very negative
+-1 | moderate negative
+0 | neutral
+1 | moderate positive
+2 | very positive
+
+Consequently, each emotional label is represented by a 5-D one-hot vector.
 
 # Reference
 If you find the code useful for your research, please consider citing
