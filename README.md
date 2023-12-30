@@ -7,17 +7,21 @@ This is the official implementation of EmoMusicTV, which  is a transformer-based
 <img src="img/model.jpg" width="300" height="350" alt="model"/><img src="img/instantiation.jpg" width="300" height="250" alt="model"/>
 
 # Data Interpretation
-Interpretation of indices in melody.data 👇
+👇Interpretation of indices in melody.data 
 Index | Definition
 -------|----------
 0 | bar
 1-61 | pitch (1 for rest)
 62-98 | duration
 99-106 | time signature
+Consequently, each melody event is represented by a 107-D vector.
 
-
-Interpretation of indices in chord.data 👇
-
+👇Interpretation of indices in chord.data 
+Index | Definition
+-------|----------
+0-6 | chord mode (0 for rest)
+0-40 | root tone 
+Consequently, each chord event is represented by a 48-D vector (concatenation of 7-D and 41-D).
 
 # Reference
 If you find the code useful for your research, please consider citing
