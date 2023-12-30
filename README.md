@@ -6,6 +6,19 @@ This is the official implementation of EmoMusicTV, which  is a transformer-based
 
 <img src="img/model.jpg" width="300" height="350" alt="model"/><img src="img/instantiation.jpg" width="300" height="250" alt="model"/>
 
+# Data Interpretation
+Interpretation of indices in melody.data 👇
+Index | Definition
+-------|----------
+0 | bar
+1-61 | pitch (1 for rest)
+62-98 | duration
+99-106 | time signature
+
+
+Interpretation of indices in chord.data 👇
+
+
 # Reference
 If you find the code useful for your research, please consider citing
 ```bib
