@@ -6,7 +6,7 @@ This is the official implementation of EmoMusicTV, which  is a transformer-based
 
 <img src="img/model.jpg" width="300" height="350" alt="model"/><img src="img/instantiation.jpg" width="300" height="250" alt="model"/>
 
-# Data Interpretation
+## Data Interpretation
 👇Interpretation of index in melody.data 
 Index | Definition
 -------|----------
@@ -36,7 +36,7 @@ Index | Definition
 
 Consequently, each emotional label is represented by a 5-D one-hot vector.
 
-# Reference
+## Reference
 If you find the code useful for your research, please consider citing
 ```bib
 @article{ji2023emomusictv,
