@@ -14,6 +14,7 @@ Index | Definition
 1-61 | pitch (1 for rest)
 62-98 | duration
 99-106 | time signature
+
 Consequently, each melody event is represented by a 107-D vector.
 
 👇Interpretation of indices in chord.data 
@@ -21,6 +22,7 @@ Index | Definition
 -------|----------
 0-6 | chord mode (0 for rest)
 0-40 | root tone 
+
 Consequently, each chord event is represented by a 48-D vector (concatenation of 7-D and 41-D).
 
 # Reference
