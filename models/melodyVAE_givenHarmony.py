@@ -13,11 +13,35 @@ class melodyVAE(EmoMusicTV):
     def __init__(self,N,h,m_size,c_size,d_ff,hidden_size,latent_size,dropout):
         super().__init__(N,h,m_size,c_size,d_ff,hidden_size,latent_size,dropout)
 
+    def P_recognitionNet(self,melody_hidden,chord_hidden,s_p_hidden):
+        concat = torch.cat((melody_hidden,chord_hidden,s_p_hidden), -1)
+        m_mean = self.P_hidden2mean1_m(concat)
+        m_logv = self.P_hidden2logv1_m(concat)
+        return m_mean, m_logv
+
     def P_priorNet(self,chord_hidden,pValence_hidden):
-        concat = self.prior_linear(torch.cat((chord_hidden, pValence_hidden), -1))  # 64*1029
-        mean = self.P_hidden2mean2(concat)
-        logv = self.P_hidden2logv2(concat)
+        concat = self.prior_linear(torch.cat((chord_hidden, pValence_hidden), -1))
+        mean = self.P_hidden2mean2_m(concat)
+        logv = self.P_hidden2logv2_m(concat)
         return mean, logv
+
+    def B_priorNet(self,history_m,s_b,timeSign):
+        if history_m is None:
+            history_m = torch.zeros([s_b.shape[0], self.decoder_input]).to(device)
+        concat = torch.cat((history_m, s_b, timeSign), -1)
+        m_mean = self.B_hidden2mean2_m(concat)
+        m_logv = self.B_hidden2logv2_m(concat)
+        return m_mean, m_logv
+
+    def B_recognitionNet(self,history_m,s_b,r_s,r_m,timeSign):
+        m_mean=0; m_logv=0
+        if torch.is_tensor(history_m) or history_m is None:
+            if history_m is None:
+                history_m=torch.zeros([s_b.shape[0],self.decoder_input]).to(device)
+            concat = torch.cat((history_m, s_b, r_s, r_m, timeSign), -1)
+            m_mean = self.B_hidden2mean1_m(concat)
+            m_logv = self.B_hidden2logv1_m(concat)
+        return m_mean,m_logv
 
     def reverse_melody(self,melody,bar_cnt,bar_index):
         melody=melody[:,bar_index[bar_cnt]:]
@@ -61,7 +85,7 @@ class melodyVAE(EmoMusicTV):
                 time_cnt+=1
             if x[0,i]==0:
                 r_s=self.reverse_sentiment(S_B,bar_cnt)
-                r_c=self.reverse_linear1(self.reverse_melody(x,bar_cnt,bar_index))
+                r_c=self.reverse_melody(x,bar_cnt,bar_index)
                 b_mean,b_logv=self.B_recognitionNet(history, S_B[:, bar_cnt, :], r_s, r_c, timeSign)
                 z_b = self.reparameterize(b_mean,b_logv)
                 b_mean_p,b_logv_p=self.B_priorNet(history, S_B[:,bar_cnt,:],timeSign)

@@ -13,11 +13,35 @@ class chordVAE(EmoMusicTV):
     def __init__(self,N,h,m_size,c_size,d_ff,hidden_size,latent_size,dropout):
         super().__init__(N,h,m_size,c_size,d_ff,hidden_size,latent_size,dropout)
 
+    def P_recognitionNet(self,melody_hidden,chord_hidden,s_p_hidden):
+        concat = torch.cat((melody_hidden,chord_hidden,s_p_hidden), -1)
+        c_mean = self.P_hidden2mean1_c(concat)
+        c_logv = self.P_hidden2logv1_c(concat)
+        return c_mean, c_logv
+
     def P_priorNet(self,melody_hidden,pValence_hidden):
-        concat = self.prior_linear(torch.cat((melody_hidden, pValence_hidden), -1))  # 64*1029
-        mean = self.P_hidden2mean2(concat)
-        logv = self.P_hidden2logv2(concat)
+        concat = self.prior_linear(torch.cat((melody_hidden, pValence_hidden), -1))
+        mean = self.P_hidden2mean2_c(concat)
+        logv = self.P_hidden2logv2_c(concat)
         return mean, logv
+
+    def B_recognitionNet(self,history_c,s_b,r_s,r_c,timeSign):
+        c_mean=0; c_logv=0
+        if torch.is_tensor(history_c) or history_c is None:
+            if history_c is None:
+                history_c=torch.zeros([s_b.shape[0],self.decoder_input]).to(device)
+            concat = torch.cat((history_c, s_b, r_s, r_c, timeSign), -1)
+            c_mean = self.B_hidden2mean1_c(concat)
+            c_logv = self.B_hidden2logv1_c(concat)
+        return c_mean,c_logv
+
+    def B_priorNet(self,history_c,s_b,timeSign):
+        if history_c is None:
+            history_c = torch.zeros([s_b.shape[0], self.decoder_input]).to(device)
+        concat = torch.cat((history_c, s_b, timeSign), -1)
+        c_mean = self.B_hidden2mean2_c(concat)
+        c_logv = self.B_hidden2logv2_c(concat)
+        return c_mean, c_logv
 
     def reverse_sentiment(self,x,i):
         reversed_s=torch.flip(x[:,i//2:,:],dims=[1])
@@ -68,10 +92,9 @@ class chordVAE(EmoMusicTV):
                         melody_bar+=1
                 r_s=self.reverse_sentiment(S_B,i)
                 r_c=self.reverse_chord(x,i)
-                r_c = self.reverse_linear1(r_c)
                 b_mean,b_logv=self.B_recognitionNet(history, S_B[:, i // 2, :], r_s, r_c,timeSign)
                 z_b = self.reparameterize(b_mean,b_logv)
-                b_mean_p,b_logv_p=self.B_priorNet(history, S_B[:,i//2,:],timeSign)
+                b_mean_p,b_logv_p=self.B_priorNet(history, S_B[:,i//2,:], timeSign)
                 z_list.append([b_mean,b_logv,b_mean_p,b_logv_p])
                 temp_x=torch.cat((x_embed[:,i,:],z_b,z_p,S_B[:, i // 2, :],timeSign),-1)
                 temp_x=LayerNorm(self.latent_size * 2 + self.c_size + 5 + 8).to(device)(temp_x)

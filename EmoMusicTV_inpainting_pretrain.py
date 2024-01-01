@@ -66,7 +66,10 @@ def trainIter(train_melody,train_chord,train_valence,test_melody,test_chord,test
     model_path = "./save_models/EmoMusicTV_124/"
     if not os.path.exists(model_path):
         os.makedirs(model_path)
-    f = open('./logs/EmoMusicTV_124.log', 'a')
+    log_path='./logs/EmoMusicTV_124.log'
+    if not os.path.exists(log_path):
+        os.makedirs(log_path)
+    f = open(log_path, 'a')
     f.write('\nbatch_size: %.6d lr: %.6f' % (batch_size,learning_rate))
     f.close()
     train_length = len(train_melody)
@@ -78,7 +81,7 @@ def trainIter(train_melody,train_chord,train_valence,test_melody,test_chord,test
     # epoch_already=dict['epoch']
     # step = (train_length // 12) * epoch_already
     for epoch in range(0,Epoch):
-        f = open('./logs/EmoMusicTV_124.log', 'a')
+        f = open(log_path, 'a')
         print("-----------------------------epoch ", epoch, "------------------------------")
         f.write('\n-----------------------------epoch %d------------------------------' % (epoch))
         train_start_idx=0
@@ -135,11 +138,11 @@ def trainIter(train_melody,train_chord,train_valence,test_melody,test_chord,test
         rl_total_test=0;kl_total_test=0;P_kl_total_test=0
         VAE.eval()
         for i in range(test_length):
-            if i + batch_size > test_length:
+            if i + test_batch_size > test_length:
                 break
-            if i % batch_size != 0:
+            if i % test_batch_size != 0:
                 continue
-            melody, chord, valence = test_melody[i:i + batch_size], test_chord[i:i + batch_size], test_valence[i:i + batch_size]
+            melody, chord, valence = test_melody[i:i + test_batch_size], test_chord[i:i + test_batch_size], test_valence[i:i + test_batch_size]
             melody_pre = torch.LongTensor([i[0] for i in melody]).to(device)
             melody_post = torch.LongTensor([i[1] for i in melody]).to(device)
             chord_pre = torch.Tensor([i[:24] for i in chord]).to(device)
@@ -151,11 +154,11 @@ def trainIter(train_melody,train_chord,train_valence,test_melody,test_chord,test
             chord_pad[:, :, 0] = 1;chord_pad[:, :, -1] = 1
             chord_post = torch.cat([chord_pad, chord_post], dim=1)
             _,loss, rl, P_kl, kl = train(melody_pre, melody_post, chord_pre, chord_post, valence, step, allStep)
-            test_total_loss+=loss*batch_size
-            rl_total_test+=rl*batch_size
-            kl_total_test+=kl*batch_size
-            P_kl_total_test+=P_kl*batch_size
-            test_start_idx+=batch_size
+            test_total_loss+=loss*test_batch_size
+            rl_total_test+=rl*test_batch_size
+            kl_total_test+=kl*test_batch_size
+            P_kl_total_test+=P_kl*test_batch_size
+            test_start_idx+=test_batch_size
         print('epoch: %d, time: %s, \ntrain loss: %.6f, test loss: %.6f, \nrl_train: %.6f, rl_test: %.6f, \n'
               'kl_train: %.6f,kl_test: %.6f, \nP_kl_train: %.6f, P_kl_test: %.6f, \nlearning rate: %.6f'
               % (epoch, timeSince(start_time), train_total_loss / train_start_idx,test_total_loss/test_start_idx,
@@ -192,6 +195,7 @@ if __name__ == '__main__':
     setup_seed(13)
     date = str(datetime.date.today())
     batch_size = 72
+    test_batch_size=12
     patience = 20
     Epoch = 200
     VAE = EmoMusicTV(N=3,h=4,m_size=8,c_size=48,d_ff=256,hidden_size=256,latent_size=128,dropout=0.2).to(device)

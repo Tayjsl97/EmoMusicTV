@@ -69,7 +69,10 @@ def trainIter(train_melody,train_chord,train_valence,test_melody,test_chord,test
     model_path = "./save_models/chordVAE_scratch_"+dataset +"/"
     if not os.path.exists(model_path):
         os.makedirs(model_path)
-    f = open('./logs/chordVAE_scratch_'+dataset +'.log', 'a')
+    log_path = './logs/chordVAE_scratch_'+dataset +'.log'
+    if not os.path.exists(log_path):
+        os.makedirs(log_path)
+    f = open(log_path, 'a')
     f.write('\nbatch_size: %.6d lr: %.6f' % (batch_size,learning_rate))
     f.close()
     train_length = len(train_melody)
@@ -79,7 +82,7 @@ def trainIter(train_melody,train_chord,train_valence,test_melody,test_chord,test
     step=0
     allStep = train_length * 100
     for epoch in range(0,Epoch):
-        f = open('./logs/chordVAE_scratch_'+dataset +'.log', 'a')
+        f = open(log_path, 'a')
         print("-----------------------------epoch ", epoch, "------------------------------")
         f.write('\n-----------------------------epoch %d------------------------------' % (epoch))
         train_total_loss=0
@@ -91,10 +94,20 @@ def trainIter(train_melody,train_chord,train_valence,test_melody,test_chord,test
         i=0
         while i < train_length:
             loss_update = 0
+            mem=0
             for j in range(batch_size // 12):
                 if i + j >= train_length:
                     break
                 melody, chord, valence = train_melody[i + j], train_chord[i + j], train_valence[i + j]
+                if melody.shape[1]>1500:
+                    continue
+                mem+=melody.shape[1]
+                if mem>1500:
+                    optimizer.zero_grad()
+                    loss_update.backward()
+                    nn.utils.clip_grad_norm_(VAE.parameters(),2)
+                    optimizer.step()
+                    loss_update=0
                 chord_prefix=torch.zeros([chord.shape[0],1,48]).to(device)
                 chord_prefix[:,:,0]=1;chord_prefix[:,:,-1]=1;
                 chord = torch.cat((chord_prefix, chord), dim=1)
@@ -130,6 +143,8 @@ def trainIter(train_melody,train_chord,train_valence,test_melody,test_chord,test
         VAE.eval()
         for i in range(test_length):
             melody, chord, valence = test_melody[i], test_chord[i], test_valence[i]
+            if melody.shape[1]>1500:
+                continue
             chord_prefix = torch.zeros([chord.shape[0], 1, 48]).to(device)
             chord_prefix[:, :, 0] = 1;chord_prefix[:, :, -1] = 1
             chord = torch.cat((chord_prefix, chord), dim=1)
