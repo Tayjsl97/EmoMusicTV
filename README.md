@@ -15,7 +15,7 @@ Index | Definition
 62-98 | duration (mapping dict shown in chordVAE_eval.py)
 99-106 | time signature (mapping dict shown in chordVAE_eval.py)
 
-Consequently, each melody event is represented by a 107-D one-hot vector.
+Consequently, each melody event can be represented as a 107-D one-hot vector.
 
 👇Interpretation of index in chord.data 
 Index | Definition
